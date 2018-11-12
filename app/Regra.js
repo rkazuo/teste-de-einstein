@@ -11,7 +11,7 @@ class Regra {
         let e1 = this._procuraElemento(atributos[0], elementos);
         let e2 = this._procuraElemento(atributos[1], elementos);
 
-        if(e1 == null || e2 == null) throw "Elemento não existe para a regra";
+        if(e1 == null || e2 == null) return false;
 
         switch (regex) {
             case '/':
