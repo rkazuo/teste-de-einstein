@@ -53,6 +53,48 @@ describe("Regras", () => {
         expect(regra1.valida(elementos)).toEqual(false);
     });
 
+    it("Quando é verdade que um elemento está em determinada posição", () => {
+        let regra1 = new Regra("O homem que vive na casa 3 bebe Leite.","3=Bebida:Leite");
+        let elemento1 = new Elemento(1,["cor:Verde","Bebida:Chá"]);
+        let elemento2 = new Elemento(2,["cor:Vermelha","nacionalidade:Sueco"]);
+        let elemento3 = new Elemento(3,["cor:Branca","Bebida:Leite"]);
+        let elementos = [elemento1, elemento2, elemento3];
+        expect(regra1.valida(elementos)).toEqual(true);
+    });
+
+    it("Quando é mentira que um elemento está em determinada posição", () => {
+        let regra1 = new Regra("O homem que vive na casa 3 bebe Leite.","3=Bebida:Leite");
+        let elemento1 = new Elemento(1,["cor:Verde","Bebida:Chá"]);
+        let elemento2 = new Elemento(2,["cor:Vermelha","nacionalidade:Sueco"]);
+        let elemento3 = new Elemento(4,["cor:Branca","Bebida:Leite"]);
+        let elementos = [elemento1, elemento2, elemento3];
+        expect(regra1.valida(elementos)).toEqual(false);
+    });
+
+    it("Quando é verdade que um elemento está em um dos lados de outro elemento", () => {
+        let regra1 = new Regra("O Norueguês vive ao lado da casa Azul.","Nacionalidade:Norueguês|Cor:Azul");
+        let regra2 = new Regra("O homem que fuma Blends vive ao lado do que tem Gatos.","Cigarro:Blends|Animal:Gato");
+        let elemento1 = new Elemento(1,["Cor:Azul","Bebida:Chá","Animal:Gato"]);
+        let elemento2 = new Elemento(2,["Cor:Vermelha","Nacionalidade:Norueguês","Cigarro:Blends"]);
+        let elemento3 = new Elemento(3,["Cor:Branca","Bebida:Leite"]);
+        let elementos = [elemento1, elemento2, elemento3];
+        expect(regra1.valida(elementos)).toEqual(true);
+        expect(regra2.valida(elementos)).toEqual(true);
+    });
+
+    it("Quando é mentira que um elemento está em um dos lados de outro elemento", () => {
+        let regra1 = new Regra("O Norueguês vive ao lado da casa Azul.","Nacionalidade:Norueguês|Cor:Azul");
+        let regra2 = new Regra("O Norueguês vive ao lado de quem bebe Leite.","Nacionalidade:Norueguês|Bebida:Leite");
+        let elemento1 = new Elemento(1,["Cor:Azul","Bebida:Chá"]);
+        let elemento2 = new Elemento(2,["Cor:Branca","Bebida:Café"]);
+        let elemento3 = new Elemento(3,["Cor:Vermelha","Nacionalidade:Norueguês"]);
+        let elemento4 = new Elemento(4,["Cor:Amarela","Bebida:Cerveja"]);
+        let elemento5 = new Elemento(5,["Cor:Branca","Bebida:Leite"]);
+        let elementos = [elemento1, elemento2, elemento3, elemento4, elemento5];
+        expect(regra1.valida(elementos)).toEqual(false);
+        expect(regra2.valida(elementos)).toEqual(false);
+    });
+
     it("Regra deixa de ser verdade", () => {
         let regra1 = new Regra("A casa Verde fica do lado esquerdo da casa Branca.","cor:Verde/cor:Branca");
         let elemento1 = new Elemento(1,["cor:Verde"]);
@@ -63,6 +105,19 @@ describe("Regras", () => {
         elemento1.set("cor:Vermelha");
         expect(regra1.valida(elementos)).toEqual(false);
     });
+
+    describe("Procura Elemento", () => {
+        it("encontrar elemento com atributo em último na lista", () => {
+            let elemento1 = new Elemento(1,["Nacionalidade:Norueguês","Bebida:Água","Animal:Gato"]);
+            let elemento2 = new Elemento(2,["Animal:Cavalo","Cigarro:Blends"]);
+            let elemento3 = new Elemento(3,["cor:Azul"]);
+            let elementos = [elemento1, elemento2, elemento3];
+            let regra = new Regra("O homem que fuma Blends vive ao lado do que tem Gatos.","Cigarro:Blends|Animal:Gato");
+            let e1 = regra._procuraElemento("Animal:Gato", elementos);
+            expect(e1).toEqual(elemento1);
+        })
+        
+    })
 });
 
 describe("Elementos", () => {
@@ -120,6 +175,5 @@ describe("Teste de Lógica", () => {
         teste.valor(2,"cor:Azul")
         teste.valor(3,"cor:Branca")
         expect(teste.concluido()).toEqual(false);
-        
     })
 });

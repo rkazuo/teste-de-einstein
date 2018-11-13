@@ -4,6 +4,10 @@ class Regra {
         this._regra = regra;
     };
 
+    get descricao() {
+        return this._descricao;
+    }
+
     valida(elementos) {
         let regex = this._tipoRegra();
         let atributos = this._regra.split(regex);
@@ -14,7 +18,7 @@ class Regra {
         if(e1 == null || e2 == null) return false;
 
         switch (regex) {
-            case '/':
+            case '/':         
                 if (e1.posicao + 1 == e2.posicao) {
                     return true;
                 }
@@ -28,7 +32,12 @@ class Regra {
                 if (e1.posicao == e2.posicao) {
                     return true;
                 }
-                break;    
+                break;
+            case '|':
+                if (e1.posicao + 1 == e2.posicao || e2.posicao + 1 == e1.posicao) {
+                    return true;
+                }
+                break; 
         };
         return false;
     };
@@ -38,6 +47,10 @@ class Regra {
         elementos.forEach(e => {
             if (e.atributos.includes(atributo)) {
                 encontrado = e;
+            } else {
+                if (e.posicao == atributo) {
+                    encontrado = e;
+                }
             }
         });
         return encontrado;
@@ -50,7 +63,10 @@ class Regra {
             if (this._regra.split(regex).length != 2) {
                 regex = /=/;
                 if (this._regra.split(regex).length != 2) {
-                    throw "Tipo de regra não reconhecido.";
+                    regex = /\|/;
+                    if (this._regra.split(regex).length != 2) {
+                        throw "Tipo de regra não reconhecido.";
+                    } 
                 } 
             } 
         } 
