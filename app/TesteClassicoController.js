@@ -50,6 +50,7 @@ class TesteClassicoController {
         var i = -1;
         document.getElementById("solucao").innerHTML = `
         <div class="row">
+            <div class="col s2">Casa</div>
             <div class="col s2">1</div>
             <div class="col s2">2</div>
             <div class="col s2">3</div>
@@ -58,6 +59,7 @@ class TesteClassicoController {
         </div>  
         ${valores.map(atributo => `
         <div class="row">
+            <div class="col s2">${atributo[0].split(/:/)[0]}</div>
             ${atributo.map( (v,index,arr) => `
                 <div class="input-field col s2">
                     <select onchange="c.testaRegras(${index+1},this);">
@@ -66,7 +68,7 @@ class TesteClassicoController {
                             <option value="${a}">${a.split(/:/)[1]}</option>
                         `).join('')}
                     </select>
-                    <label>${atributo[0].split(/:/)[0]}</label>
+                    
                 </div>
             `).join('')}
             
