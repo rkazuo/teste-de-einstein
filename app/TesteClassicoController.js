@@ -35,7 +35,12 @@ class TesteClassicoController {
         document.getElementById("dicas").innerHTML = `
             <ul>
                 ${this._dicas.map( d => `
-                    <li><input class="chkDica" type="checkbox" disabled="true" ${d.valida(this._teste.elementos) ? "checked" : ""}  />${d.descricao}</li>
+                    <li>
+                        <label>
+                            <input class="chkDica" type="checkbox" disabled="true" ${d.valida(this._teste.elementos) ? "checked" : ""}  />
+                            <span>${d.descricao}</span>
+                        </label>
+                    </li>
                 `).join('')}                
             </ul>
         `;
@@ -44,44 +49,37 @@ class TesteClassicoController {
         let valores = [this._cores,this._nacionalidade,this._bebida,this._cigarro,this._animal];
         var i = -1;
         document.getElementById("solucao").innerHTML = `
-        <style>
-        table, th, td {
-            border: 1px solid black;
-            border-collapse: collapse;
-        }
-        th, td {
-            padding: 5px;
-            text-align: left;
-        }
-        </style>
-        <table style="width:100%">
-            <tr>
-                <th>Casa</th>
-                <td>1</td>
-                <td>2</td>
-                <td>3</td>
-                <td>4</td>
-                <td>5</td>
-            </tr>
-            ${valores.map(atributo => `
-            <tr>
-                <th>${atributo[0].split(/:/)[0]}</th>
-                ${atributo.map( (v,index,arr) => `
-                    <td>
-                        <select onchange="c.testaRegras(${index+1},this);">
-                            <option value="${atributo[0].split(/:/)[0]}:"></option>
-                            ${atributo.map( a => `
-                                <option value="${a}">${a.split(/:/)[1]}</option>
-                            `).join('')}
-                        </select>
-                    </td>
-                `).join('')}
-                
-            </tr>
-                
-            `).join('')}                
-        </table>
+        <div class="row">
+            <div class="col s2">1</div>
+            <div class="col s2">2</div>
+            <div class="col s2">3</div>
+            <div class="col s2">4</div>
+            <div class="col s2">5</div>
+        </div>  
+        ${valores.map(atributo => `
+        <div class="row">
+            ${atributo.map( (v,index,arr) => `
+                <div class="input-field col s2">
+                    <select onchange="c.testaRegras(${index+1},this);">
+                        <option value="${atributo[0].split(/:/)[0]}:"></option>
+                        ${atributo.map( a => `
+                            <option value="${a}">${a.split(/:/)[1]}</option>
+                        `).join('')}
+                    </select>
+                    <label>${atributo[0].split(/:/)[0]}</label>
+                </div>
+            `).join('')}
+            
+        </div>
+            
+        `).join('')}                
         `;
+
+        document.addEventListener('DOMContentLoaded', function() {
+            var elems = document.querySelectorAll('select');
+            var instances = M.FormSelect.init(elems, []);
+        });
+
     }
 
     testaRegras(posicao,control) {
